@@ -1,3 +1,6 @@
+require('dotenv').config();
+
+
 const express = require('express')
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs')
@@ -22,7 +25,6 @@ const { createClient } = require('@supabase/supabase-js');
 const multer = require('multer');
 
 const sharp = require('sharp');
-require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 
 
