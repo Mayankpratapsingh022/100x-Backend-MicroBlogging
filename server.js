@@ -59,7 +59,7 @@ app.use(session({
 }));
 
 // const {Users} = require('./models');
-//await db.sequelize.close()
+await db.sequelize.close()
 
 const generateVerificationOtp =() =>{
   return Math.floor(100000 + Math.random()*900000);
