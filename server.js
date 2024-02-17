@@ -109,7 +109,7 @@ const transporter = nodemailer.createTransport(
 
 console.log(process.env.SMTP_HOST,"hos")
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: '127.0.0.1:3306',
   credentials:true,
 }))
 
