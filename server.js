@@ -128,9 +128,10 @@ app.get("/healthcheck", async (req, res) => {
       res.status(500).send("unable to connect to sever");
 
       console.log(error);
-    }finally{
-      await db.sequelize.close();
     }
+    // finally{
+    //   await db.sequelize.close();
+    // }
 
   });
 
