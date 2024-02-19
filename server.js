@@ -89,6 +89,9 @@ const uploadOnCloudinary = async (localFilePath)=>{
             fs.unlinkSync(localFilePath) // remove the locally saved file when upload operartion got failed
             return null;
     }
+    finally{
+      await db.sequelize.close();
+    }
 }
 
 
@@ -106,7 +109,7 @@ const transporter = nodemailer.createTransport(
 
 console.log(process.env.SMTP_HOST,"hos")
 app.use(cors({
-  origin: '127.0.0.1:3306',
+  origin: 'http://localhost:5173',
   credentials:true,
 }))
 
@@ -118,14 +121,17 @@ app.use(cors({
 app.get("/healthcheck", async (req, res) => {
     try {
       await db.sequelize.authenticate();
-      await db.sequelize.close();
+      // await db.sequelize.close();
       res.status(200).send("I'm healthy!");
     } catch (error) {
-      await db.sequelize.close();
+      // await db.sequelize.close();
       res.status(500).send("unable to connect to sever");
 
       console.log(error);
+    }finally{
+      await db.sequelize.close();
     }
+
   });
 
 
@@ -154,6 +160,9 @@ const authenticateUser = async (req,res,next)=>{
   }
   catch(err){
     res.status(401).send("Invalid token");
+  }
+  finally{
+    await db.sequelize.close();
   }
 
 
@@ -194,6 +203,8 @@ res.status(201).send({message:'User created!'});
 catch (error){
 res.status(500).send({error:'Failded tso Create  user'})
 console.log(error)
+}finally{
+  await db.sequelize.close();
 }
 
 
@@ -233,6 +244,8 @@ app.post('/login',async (req,res)=>{
         }catch(err){
           console.error("Error during login:",err);
           res.status(500).send("Internal server error.");
+        }finally{
+          await db.sequelize.close();
         }
 })
 
@@ -254,12 +267,15 @@ const PostUserID= await Users.findOne({
   where:{
     id:req.body.id
   }
+
 }) 
 
 
 
-  }catch{
-
+  }  catch(err){
+    console.error("Error",err);
+  }finally{
+    await db.sequelize.close();
   }
 })
 
@@ -296,7 +312,9 @@ catch(error){
   res.status(500).json({error:"failed to fetch posts"});
   console.log(error,"eeee");
 }
-
+finally{
+  await db.sequelize.close();
+}
 
 })
 
@@ -370,6 +388,9 @@ try{
 }catch(error){
   console.log(error);
 }
+finally{
+  await db.sequelize.close();
+}
 
 })
 
@@ -442,6 +463,8 @@ app.get("/CurrentUserFeed/:id",async(req,res)=>{
 
 }catch(error){
        console.log("Your don't have Id in the URL")
+  }finally{
+    await db.sequelize.close();
   }
 
 })
@@ -478,6 +501,8 @@ try{
 }catch(error){
   console.log("Error updating user :",error)
   res.status(500).send({ error: "Failed to update user" });
+}finally{
+  await db.sequelize.close();
 }
 
 
@@ -546,6 +571,8 @@ app.post("/likeStatus",async(req,res)=>{
   }catch(error){
     console.log(error)
     res.status(500).send({ error: "Failed to send Status" });
+  }finally{
+    await db.sequelize.close();
   }
 })
 
@@ -596,6 +623,8 @@ app.post("/like", authenticateUser, async (req, res) => {
   } catch (error) {
     console.error("Error, can't like/unlike the post", error);
     res.status(500).send({ error: "Failed to like/unlike post" });
+  }finally{
+    await db.sequelize.close();
   }
 });
 
@@ -672,6 +701,8 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   } catch (error) {
     console.error('Error:', error.message);
     return res.status(500).send('Internal Server Error');
+  }finally{
+    await db.sequelize.close();
   }
 });
 
@@ -695,6 +726,8 @@ app.post("/likenumber/:id",async(req,res)=>{
     }catch(error){
       res.status(500).json({error:error});
      
+    }finally{
+      await db.sequelize.close();
     }
 })
 
@@ -716,6 +749,8 @@ app.post("/UserFollowing/:id",async(req,res)=>{
     }catch(error){
       res.status(500).json({error:error});
      
+    }finally{
+      await db.sequelize.close();
     }
 })
 
@@ -790,6 +825,8 @@ if(isFollowing){
 }catch(error){
 console.log(error);
 
+}finally{
+  await db.sequelize.close();
 }
 
 
@@ -853,6 +890,8 @@ app.get("/FollowingFeed/:id",async(req,res)=>{
 
 }catch(error){
        console.log("Your don't have Id in the URL")
+  }finally{
+    await db.sequelize.close();
   }
 
 })
