@@ -109,7 +109,7 @@ const transporter = nodemailer.createTransport(
 
 console.log(process.env.SMTP_HOST,"hos")
 app.use(cors({
-  origin: 'http://localhost:5173' || "https://100x-micro-blogging-mayank.vercel.app/",
+  origin: 'http://localhost:5173' || "https://100x-micro-blogging-mayank.vercel.app",
   credentials:true,
 }))
 
